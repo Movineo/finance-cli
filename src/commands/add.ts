@@ -11,15 +11,23 @@ const add = new Command('add')
   .action(async (options: { type: string; amount: string; category: string; description: string }) => {
     try {
       const { type, amount, category, description } = options;
+      
+      // Validate type first
       if (!['expense', 'income'].includes(type)) {
         console.error(chalk.red('Type must be "expense" or "income"'));
         process.exit(1);
+        return; // Early return after validation failure
       }
+
+      // Then validate amount
       const amountNum = parseFloat(amount);
       if (isNaN(amountNum) || amountNum <= 0) {
         console.error(chalk.red('Amount must be a positive number'));
         process.exit(1);
+        return; // Early return after validation failure
       }
+
+      // Only proceed with database operation if validations pass
       await prisma.transaction.create({
         data: {
           type,

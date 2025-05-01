@@ -12,8 +12,9 @@ const summary = new Command('summary')
         console.error(chalk.red('Months must be a positive number'));
         process.exit(1);
       }
-      const endDate = new Date();
-      const startDate = new Date(endDate.getFullYear(), endDate.getMonth() - months + 1, 1);
+      const now = new Date();
+      const endDate = new Date(now.getFullYear(), now.getMonth() + 1, 0); // Last day of current month
+      const startDate = new Date(now.getFullYear(), now.getMonth() - months + 1, 1); // First day of start month
       const transactions = await prisma.transaction.groupBy({
         by: ['type'],
         where: {

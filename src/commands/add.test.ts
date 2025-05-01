@@ -3,6 +3,7 @@ import { Command } from 'commander';
 import addCommand from './add';
 import prisma from '../db/prisma';
 
+
 jest.mock('../db/prisma');
 
 describe('add command', () => {
@@ -83,11 +84,13 @@ describe('add command', () => {
   it('should reject invalid type', async () => {
     const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
     const exitSpy = jest.spyOn(process, 'exit').mockImplementation();
+    const createMock = prisma.transaction.create as jest.Mock;
 
-    await program.parseAsync(['node', 'index.js', 'add', '--type', 'invalid', '--amount', '50']);
+    await program.parseAsync(['node', 'index.js', 'add', '--type', 'invalid', '--amount', '50', '--category', 'salary', '--description', 'Test']);
 
     expect(consoleErrorSpy).toHaveBeenCalledWith(expect.stringContaining('Type must be "expense" or "income"'));
     expect(exitSpy).toHaveBeenCalledWith(1);
+    expect(createMock).not.toHaveBeenCalled();
     consoleErrorSpy.mockRestore();
     exitSpy.mockRestore();
   });
