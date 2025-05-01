@@ -30,7 +30,7 @@ jobs:
           cache: 'npm'
       - run: npm ci
       - run: npm install eslint @typescript-eslint/parser @typescript-eslint/eslint-plugin
-      - run: npx eslint src/
+      - run: npx eslint src/ --config eslint.config.mjs
 
   build:
     runs-on: ubuntu-latest

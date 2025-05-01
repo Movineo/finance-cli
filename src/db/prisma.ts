@@ -1,24 +1,25 @@
 import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient({
-  log: ['error', 'warn'],
+  log: ['query', 'info', 'warn', 'error'],
 });
 
-// Retry logic for Prisma operations
-export async function withRetry<T>(operation: () => Promise<T>, maxAttempts = 3, delayMs = 1000): Promise<T> {
-  let lastError: unknown;
-  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+async function connectWithRetry(retries = 5, delay = 1000) {
+  for (let i = 0; i < retries; i++) {
     try {
-      return await operation();
+      await prisma.$connect();
+      return prisma;
     } catch (error) {
-      lastError = error;
-      if (attempt < maxAttempts) {
-        console.warn(`Attempt ${attempt} failed, retrying in ${delayMs}ms...`);
-        await new Promise((resolve) => setTimeout(resolve, delayMs));
-      }
+      if (i === retries - 1) throw error;
+      await new Promise((resolve) => setTimeout(resolve, delay));
     }
   }
-  throw lastError;
 }
+
+// Initialize connection on import
+connectWithRetry().catch((error) => {
+  console.error('Failed to connect to database:', error);
+  process.exit(1);
+});
 
 export default prisma;

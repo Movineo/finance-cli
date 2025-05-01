@@ -33,16 +33,14 @@ const summary = new Command('summary')
         if (t.type === 'income') income = t._sum.amount || 0;
       });
       const balance = income - expenses;
-      console.log(chalk.blue(`Summary for ${months} Month${months > 1 ? 's' : ''} (${startDate.toISOString().split('T')[0]} to ${endDate.toISOString().split('T')[0]}):`));
+      const startDateStr = startDate.toISOString().split('T')[0];
+      const endDateStr = endDate.toISOString().split('T')[0];
+      console.log(chalk.blue(`Summary for ${months} Month${months > 1 ? 's' : ''} (${startDateStr} to ${endDateStr}):`));
       console.log(chalk.yellow(`Income: $${income.toFixed(2)}`));
       console.log(chalk.yellow(`Expenses: $${expenses.toFixed(2)}`));
       console.log(chalk.green(`Balance: $${balance.toFixed(2)}`));
     } catch (error) {
-      if (error instanceof Error) {
-        console.error(chalk.red('Error fetching summary:', error.message));
-      } else {
-        console.error(chalk.red('Error fetching summary:', String(error)));
-      }
+      console.error(chalk.red('Error fetching summary:', (error as Error).message));
       process.exit(1);
     }
   });

@@ -1,3 +1,4 @@
+// src/commands/add.test.ts
 import { Command } from 'commander';
 import addCommand from './add';
 import prisma from '../db/prisma';
@@ -42,6 +43,39 @@ describe('add command', () => {
     });
     expect(consoleLogSpy).toHaveBeenCalledWith(
       expect.stringContaining('Transaction added: expense of $50 in food')
+    );
+    consoleLogSpy.mockRestore();
+  });
+
+  it('should add a valid income transaction', async () => {
+    const consoleLogSpy = jest.spyOn(console, 'log').mockImplementation();
+    const createMock = prisma.transaction.create as jest.Mock;
+    createMock.mockResolvedValue({});
+
+    await program.parseAsync([
+      'node',
+      'index.js',
+      'add',
+      '--type',
+      'income',
+      '--amount',
+      '100',
+      '--category',
+      'salary',
+      '--description',
+      'Paycheck',
+    ]);
+
+    expect(createMock).toHaveBeenCalledWith({
+      data: {
+        type: 'income',
+        amount: 100,
+        category: 'salary',
+        description: 'Paycheck',
+      },
+    });
+    expect(consoleLogSpy).toHaveBeenCalledWith(
+      expect.stringContaining('Transaction added: income of $100 in salary')
     );
     consoleLogSpy.mockRestore();
   });
