@@ -1,3 +1,4 @@
+// src/commands/breakdown.ts
 import { Command } from 'commander';
 import chalk from 'chalk';
 import * as asciichart from 'asciichart';
@@ -32,7 +33,8 @@ const breakdown = new Command('breakdown')
         const percentage = totalExpenses > 0 ? ((amount / totalExpenses) * 100).toFixed(2) : '0.00';
         console.log(chalk.yellow(`- ${cat.category}: $${amount.toFixed(2)} (${percentage}%)`));
       });
-      if (!options.noChart) {
+      // Show chart by default unless --no-chart is specified
+      if (options.noChart !== false) {
         const chartData = categories.map((cat) => cat._sum.amount || 0);
         const chartLabels = categories.map((cat) => cat.category);
         console.log(chalk.blue('\nSpending Chart:'));
