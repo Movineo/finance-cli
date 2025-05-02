@@ -155,23 +155,6 @@ npm run prisma:generate
 
 
 
-Project Structure
-finance-cli/
-├── .env                # Environment variables (DATABASE_URL)
-├── .gitignore          # Excludes node_modules, dist, .env, etc.
-├── .github/workflows/  # GitHub Actions CI/CD
-├── src/
-│   ├── commands/       # CLI commands (add, summary, etc.)
-│   ├── db/prisma.ts    # Prisma client with retry logic
-│   ├── prisma/         # Prisma schema
-│   ├── index.ts        # CLI entry point
-├── tests/              # Unit tests
-├── package.json        # Dependencies and scripts
-├── README.md           # Documentation
-├── tsconfig.json       # TypeScript configuration
-├── jest.config.js      # Jest configuration
-├── .eslintrc.json      # ESLint configuration
-
 Testing
 The CLI includes unit tests for add, delete, summary, check-budget, and breakdown commands using Jest. Run:
 npm test
